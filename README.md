@@ -1,2 +1,3 @@
 # peteballs
-A simple game
+
+A simple game written in vanilla JS with a canvas view
