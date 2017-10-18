@@ -1,12 +1,41 @@
 body{
-  background-color: #333333;
+  background-color: #ed97e6;
 }
 
 #spring{
-  width: 900px;
-  margin: 100px auto;
+  width: 902px;
+  margin: 50px auto;
+}
+
+.score-holder{
+  background: url('images/canvas-bg.png');
+  border: solid 1px #ffffff;
+  margin: 30px 0;
+  padding: 8px;
+  height: 90px;
+}
+
+.score-holder .score{
+  float: right;
+  text-align: right;
+  color: #ffff00;
+  font-size: 39px;
+  font-family: kefa, sans-serif;
+  margin: 22px;
+  font-weight: normal;
+}
+
+.score-holder .level{
+  float: left;
+  text-align: left;
+  color: #ffff00;
+  font-size: 39px;
+  font-family: 'Kefa', sans-serif;
+  margin: 22px;
+  font-weight: normal;
 }
 
 #peteballs-canvas{
+  background: url('images/canvas-bg.png');
   border: solid 1px #ffffff;
 }
