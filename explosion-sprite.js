@@ -3,20 +3,6 @@
 function ExplosionSprite(game){
 
   var creator = this;
-  creator.images = [];
-  creator.loadedResourceCount = 0;
-
-  creator.init = function(){
-    creator.loadImage('explosion');
-  }
-
-  creator.loadImage = function(src){
-    creator.images[src] = new Image();
-    creator.images[src].onload = function() {
-        creator.loadedResourceCount++;
-    }
-    creator.images[src].src = "images/" + src + ".png";
-  }
 
   creator.create = function(x, y, size, callback){
     var sprite = {}
@@ -28,7 +14,8 @@ function ExplosionSprite(game){
     };
 
     sprite.size = size;
-    sprite.radius = 0;
+    sprite.collisionRadius = 0;
+    sprite.maxCollisionRadius = (size / 2) * 0.7
     sprite.state = 'alive';
 
     sprite.image = {
@@ -43,12 +30,13 @@ function ExplosionSprite(game){
     };
 
     sprite.render = function(){
+
       game.context.save();
       game.context.translate(sprite.position.x, sprite.position.y);
       game.context.rotate(creator.toRadians(sprite.baseRotation));
 
       game.context.drawImage(
-        creator.images["explosion"],
+        game.images["explosion"],
         sprite.image.curCol * sprite.image.frameWidth,
         sprite.image.curRow * sprite.image.frameHeight,
         sprite.image.frameWidth,
@@ -60,6 +48,11 @@ function ExplosionSprite(game){
       );
 
       game.context.restore();
+
+      // game.context.beginPath();
+      // game.context.arc(sprite.position.x, sprite.position.y, sprite.collisionRadius, 0, 2 * Math.PI, false);
+      // game.context.fillStyle = '#000000';
+      // game.context.fill();
     }
 
     sprite.step = function(){
@@ -78,21 +71,21 @@ function ExplosionSprite(game){
         sprite.image.currentFrame = 0;
         sprite.animationComplete();
       }
-      sprite.updateRadius();
+      sprite.updateCollisionRadius();
 
       sprite.render();
     }
 
-    sprite.updateRadius = function(){
-      var framesToFull = 32
-      var increment = sprite.size / framesToFull;
-      if(sprite.currentFrame < 32){
-        sprite.radius = sprite.radius + increment;
+    sprite.updateCollisionRadius = function(){
+      var numFramesToMaxSize = (sprite.image.numCols * sprite.image.numRows) / 2;
+      var increment = sprite.maxCollisionRadius / numFramesToMaxSize
+      if(sprite.image.currentFrame < numFramesToMaxSize){
+        sprite.collisionRadius = sprite.collisionRadius + increment;
       }else{
-        sprite.radius = sprite.radius - increment;
+        sprite.collisionRadius = sprite.collisionRadius - increment;
       }
 
-      sprite.radius = sprite.radius < 0 ? 0 : sprite.radius;
+      sprite.collisionRadius = sprite.collisionRadius < 0 ? 0 : sprite.collisionRadius;
     }
 
     sprite.animationComplete = function(){
@@ -108,8 +101,6 @@ function ExplosionSprite(game){
   creator.toRadians = function(angle){
     return angle * (Math.PI / 180);
   }
-
-  creator.init();
 
   return creator;
 }

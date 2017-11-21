@@ -6,6 +6,7 @@ function Game(){
 
   // set the game variables
 
+  game.ready = false;
   game.score = 0;
   game.level = 0;
   game.scoreRequired = [0, 2, 3, 5, 7, 9, 11,14,16,18,20,23,28,32,40,50];
@@ -37,12 +38,12 @@ function Game(){
     game.canvas.height = game.height;
     game.canvas.id = 'peteballs-canvas';
     game.context = game.canvas.getContext("2d");
-    document.getElementById('canvas-holder').appendChild(game.canvas);
-    game.canvas.addEventListener("click", game.click);
 
     game.loadImage('title');
     game.loadImage('game-over');
     game.loadImage('level-passed');
+    game.loadImage('explosion');
+    game.loadImage('ball-spritesheet');
   }
 
   game.click = function(e){
@@ -58,6 +59,14 @@ function Game(){
   }
 
   game.start = function(){
+    if(game.loadedResourceCount < game.resourceCount){
+      setTimeout(function(){game.start()}, 100);
+      return;
+    }
+
+    document.getElementById('canvas-holder').appendChild(game.canvas);
+    game.canvas.addEventListener("click", game.click);
+
     game.renderBanner('title');
     game.step();
   }
@@ -105,9 +114,9 @@ function Game(){
     var cx = spriteB.position.x
     var px = spriteA.position.x
     var py = spriteA.position.y
-    var radius = spriteB.radius + spriteA.radius;
+    var collisionRadius = spriteB.collisionRadius + spriteA.collisionRadius;
     var distancesquared = (px - cx) * (px - cx) + (py - cy) * (py - cy);
-    return distancesquared <= radius * radius;
+    return distancesquared <= collisionRadius * collisionRadius;
   }
 
   game.renderFrame = function(){
@@ -172,11 +181,20 @@ function Game(){
   }
 
   game.increaseScore = function(){
-    if(game.score < 1){
-      game.score = 1
+    if(game.levelScore < game.scoreRequired[game.level]){
+      var increment = 1;
     }else{
-      game.score = game.score + 1;
+      var increment = game.level + (game.levelScore - game.scoreRequired[game.level]);
     }
+    game.score = game.score + increment
+  }
+
+  game.updateScore = function(){
+    var levelScore = document.getElementById('level-score');
+    levelScore.innerHTML = game.levelScore+'/'+game.scoreRequired[game.level];
+
+    var totalScore = document.getElementById('total-score');
+    totalScore.innerHTML = 'Score: '+game.score;
   }
 
   game.loadImage = function(src){
@@ -189,20 +207,8 @@ function Game(){
   }
 
   game.renderBanner = function(imageName){
-    if(game.loadedResourceCount < game.resourceCount){
-      setTimeout(function(){game.renderBanner(imageName)}, 100);
-      return;
-    }
     game.context.clearRect(0, 0, game.width, game.height);
     game.context.drawImage(game.images[imageName], 0, 0);
-  }
-
-  game.updateScore = function(){
-    var levelScore = document.getElementById('level-score');
-    levelScore.innerHTML = game.levelScore+'/'+game.scoreRequired[game.level];
-
-    var totalScore = document.getElementById('total-score');
-    totalScore.innerHTML = 'Score: '+game.score;
   }
 
   game.init();

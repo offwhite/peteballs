@@ -4,13 +4,13 @@ body{
 
 #spring{
   width: 902px;
-  margin: 50px auto;
+  margin: 10px auto;
 }
 
 .score-holder{
   background: url('images/canvas-bg.png');
   border: solid 1px #ffffff;
-  margin: 30px 0;
+  margin: 20px 0;
   padding: 8px;
   height: 90px;
 }
