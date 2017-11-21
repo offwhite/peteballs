@@ -1,20 +1,6 @@
 function BallSprite(game){
 
   var creator = this;
-  creator.images = [];
-  creator.loadedResourceCount = 0;
-
-  creator.init = function(){
-    creator.loadImage('ball-spritesheet');
-  }
-
-  creator.loadImage = function(src){
-    creator.images[src] = new Image();
-    creator.images[src].onload = function() {
-        creator.loadedResourceCount++;
-    }
-    creator.images[src].src = "images/" + src + ".png";
-  }
 
   creator.create = function(size){
     var sprite = {};
@@ -27,7 +13,7 @@ function BallSprite(game){
     sprite.direction = creator.random(360);
 
     sprite.size = size
-    sprite.radius = size;
+    sprite.collisionRadius = size / 2;
     sprite.speed = 6;
     sprite.state = 'alive';
 
@@ -42,7 +28,7 @@ function BallSprite(game){
       game.context.rotate(creator.toRadians(sprite.rotation));
 
       game.context.drawImage(
-        creator.images["ball-spritesheet"],
+        game.images["ball-spritesheet"],
         sprite.frame * sprite.imgWidth,
         0,
         sprite.imgWidth,
@@ -92,5 +78,4 @@ function BallSprite(game){
     return Math.floor((Math.random() * max));
   }
 
-  creator.init();
 }
